@@ -1,6 +1,6 @@
 # Vancouver Datajam 2021 Project template 
 
-This repository contains a Python project template for the drone database project.
+This repository contains a Python project template for the drone database project. Another line added.
 
 ## Project title
 
