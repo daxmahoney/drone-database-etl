@@ -1,4 +1,5 @@
-# Subtask 2 - Extract metadata from images using Pillow, and transform some of them as needed.
+# Subtask 1.2 - Extract metadata from images using Pillow, and transform some of them as needed.
+# Subtask 1.3 - Define JSON structure and work collaboratively to generate a standard JSON for each file
 
 # TODO 1. Access more metadata 'stage', 'colorprofile', 'focallength', 'alpha',
 #                              'redeye', fnumber', 'metering', 'exposure', 'exposuretime'
@@ -8,6 +9,7 @@
 from PIL import Image, JpegImagePlugin
 from PIL.ExifTags import TAGS
 import os
+import json
 
 
 def extract_metadata(path_to_img: str) -> dict:
@@ -45,6 +47,33 @@ def extract_metadata(path_to_img: str) -> dict:
     return img_metadata
 
 
+def metadata_dict_to_json(metadata_dictionary):
+    """
+    Returns structured JSON from input dictionary
+    ---------------------------------------------
+    input: dictionary of file metadata
+    output: json
+    """
+    clean_metadata = {}
+
+    filename_args = metadata_dictionary['filename'].split('/')
+    clean_metadata['stage'] = filename_args[-3].lower()
+    clean_metadata['filename'] = filename_args[-1]
+    clean_metadata['imglocation'] = '/'.join(filename_args[-3:])
+
+    data_to_keep = ['imgwidth', 'imgheight',
+                    'exif_DateTime', 'exif_ImageDescription'
+                    'xmp_CreateDate', 'xmp_Make', 'xmp_Model',]
+
+    for md_k, md_v in metadata_dictionary.items():
+        if md_k in data_to_keep:
+            clean_metadata[md_k] = md_v
+
+    clean_metadata_json = json.dumps(clean_metadata)
+
+    return clean_metadata_json
+
+
 if __name__ == "__main__":
 
     example_img = 'C:/Users/G-Unit/Desktop/Arisa/VDJ2021/' \
@@ -56,3 +85,6 @@ if __name__ == "__main__":
     for k, v in metadata_dict.items():
         print(f'{k}:{v}')
 
+    print('======')
+
+    print(metadata_dict_to_json(metadata_dict))

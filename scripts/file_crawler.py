@@ -1,4 +1,4 @@
-# Subtask 1 - Crawl through the directories to obtain file structure, file name, file type, and other useful information
+# Subtask 1.1 - Crawl through the directories to obtain file structure, file name, file type, and other useful information
 
 import os
 
@@ -40,13 +40,16 @@ def get_file_locations(folder_dictionary: dict) -> tuple:
 
 if __name__ == "__main__":
 
-    # entry_point = input("Folder location:")
-    entry_point = 'C:/Users/G-Unit/Desktop/Arisa/VDJ2021/drone-database-etl-copy/data'
+    entry_point = input("Folder location:")
+    # entry_point = 'C:/Users/G-Unit/Desktop/Arisa/VDJ2021/drone-database-etl-copy/data'
 
     folder_dict = get_root_structure(entry_point)
     img_paths, file_paths = get_file_locations(folder_dict)
 
     print('folder_dict', folder_dict)
+
+    for k,v in folder_dict.items():
+        print(k, v)
 
     print('Image Files:')
     for img in img_paths:
