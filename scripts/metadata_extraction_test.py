@@ -1,6 +1,7 @@
 # Subtask 2 - Extract metadata from images using Pillow, and transform some of them as needed.
 
-# TODO 1. Access more metadata 'stage', 'colorprofile', 'focallength', 'alpha', 'redeye', fnumber', 'metering', 'exposure', 'exposuretime'
+# TODO 1. Access more metadata 'stage', 'colorprofile', 'focallength', 'alpha',
+#                              'redeye', fnumber', 'metering', 'exposure', 'exposuretime'
 # TODO 2. Clean dictionary contents
 # TODO 3. Add try/except statements
 
