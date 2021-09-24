@@ -3,7 +3,7 @@
 import os
 
 
-def get_root_structure(filepath):
+def get_root_structure(filepath: str) -> dict:
     """
     Get the file structure of the file path and return a dictionary
     --------------------------------------------------------------
@@ -18,12 +18,12 @@ def get_root_structure(filepath):
     return root_structure
 
 
-def get_file_locations(folder_dictionary):
+def get_file_locations(folder_dictionary: dict) -> tuple:
     """
     Get the file paths of all the images (.JPG format)
     ------------------------------------------------------------------
     Input: a dictionary of path and images as "path":['file1.jpg', 'file2.jpg', ...]
-    Output: a list of image locations: ['file1.jpg', 'file2.jpg', ...]"""
+    Output: a tuple of lists of image locations and other file locations: ['file1.jpg', 'file2.jpg', ...]"""
     img_locations = []
     other_files = []
     try:

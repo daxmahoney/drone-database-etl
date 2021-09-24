@@ -1,24 +1,45 @@
 # Subtask 2 - Extract metadata from images using Pillow, and transform some of them as needed.
 
-from file_crawler import get_root_structure, get_file_locations
+# TODO 1. Access more metadata 'stage', 'colorprofile', 'focallength', 'alpha', 'redeye', fnumber', 'metering', 'exposure', 'exposuretime'
+# TODO 2. Clean dictionary contents
+# TODO 3. Add try/except statements
+
 from PIL import Image, JpegImagePlugin
 from PIL.ExifTags import TAGS
 import os
-import defusedxml
 
 
-def extract_metadata(path_to_img):
-
+def extract_metadata(path_to_img: str) -> dict:
+    """
+    Returns dictionary with metadata from image
+    --------------------------------------------
+    Input: path to the image file (str)
+    Output: dictionary with metadata
+    """
     img_metadata = {}
     image = Image.open(path_to_img)
     exif_data = image.getexif()
 
+    # Get general data
+    img_metadata['filename'] = image.filename
+    img_metadata['colorspace'] = image.mode
+    img_metadata['imgwidth'] = image.width
+    img_metadata['imgheight'] = image.height
+
+    # Get exif_data
     for tag_id in exif_data:
         tag = TAGS.get(tag_id, tag_id)
         metadata = exif_data.get(tag_id)
         if isinstance(metadata, bytes):
             metadata = metadata.decode()
-        img_metadata[tag] = metadata
+        img_metadata[f'exif_{tag}'] = metadata
+
+    # Get xmp data
+    image_jpeg = JpegImagePlugin.JpegImageFile(path_to_img)
+    image_jpeg_data = image_jpeg.getxmp()
+
+    for tag_, metadata_ in image_jpeg_data['xmpmeta']['RDF']['Description'].items():
+        img_metadata[f'xmp_{tag_}'] = metadata_
 
     return img_metadata
 
@@ -31,32 +52,6 @@ if __name__ == "__main__":
     print(os.path.getsize(example_img))
     metadata_dict = extract_metadata(example_img)
 
-    for k,v in metadata_dict.items():
+    for k, v in metadata_dict.items():
         print(f'{k}:{v}')
-    print('======')
-
-    img1 = Image.open(example_img)
-
-    for k, v in img1.info.items():
-        print(f'{k}:{v}')
-
-    print(type(metadata_dict['XPKeywords']))
-
-    print('=======')
-
-    print(img1.format)
-    print(img1.mode)
-    print(img1.size)
-    print(img1.filename)
-    print(img1.palette)
-
-    print('==========')
-
-    img = JpegImagePlugin.JpegImageFile(example_img)
-    print(img.format)
-    print(img.getxmp())
-
-    for k, v in img.getxmp()['xmpmeta']['RDF']['Description'].items():
-        print(f'{k}:{v}')
-
 
