@@ -23,7 +23,7 @@ s3 = boto3.client('s3')
 
 # Upload files into s3
 # For each filepath
-for i in range(len(img_files)):
+for i in range(3):
     file_location = img_files[i]
     file_name = imgs_filenames[i]
 
