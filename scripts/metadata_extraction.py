@@ -62,7 +62,6 @@ def clean_metadata(metadata_dictionary):
     clean_metadata['imgname'] = filename_args[-1]
     clean_metadata['imglocation'] = '/'.join(filename_args[-3:])
     clean_metadata['format'] = filename_args[-1][-3:]
-    clean_metadata['filename'] = filename_args[-1][:-4]
 
     data_to_keep = ['imgwidth', 'imgheight', 'colorspace',
                     'exif_DateTime', 'exif_ImageDescription',
@@ -110,3 +109,7 @@ if __name__ == "__main__":
         print(f'{k}:{v}')
 
     print('======')
+
+    print(metadata_dict_to_json(clean_metadata(metadata_dict)))
+
+tst = "test"
