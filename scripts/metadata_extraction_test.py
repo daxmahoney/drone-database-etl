@@ -47,18 +47,15 @@ def extract_metadata(path_to_img: str) -> dict:
     return img_metadata
 
 
-def metadata_dict_to_json(metadata_dictionary):
+def clean_metadata(metadata_dictionary):
     """
-    Returns structured JSON from input dictionary
-    ---------------------------------------------
-    input: dictionary of file metadata
-    output: json
+
     """
     clean_metadata = {}
 
     filename_args = metadata_dictionary['filename'].split('/')
     clean_metadata['stage'] = filename_args[-3].lower()
-    clean_metadata['filename'] = filename_args[-1]
+    clean_metadata['filename'] = filename_args[-1][:-4]
     clean_metadata['imglocation'] = '/'.join(filename_args[-3:])
 
     data_to_keep = ['imgwidth', 'imgheight',
@@ -69,7 +66,17 @@ def metadata_dict_to_json(metadata_dictionary):
         if md_k in data_to_keep:
             clean_metadata[md_k] = md_v
 
-    clean_metadata_json = json.dumps(clean_metadata)
+    return clean_metadata
+
+
+def metadata_dict_to_json(clean_metadata_dict):
+    """
+    Returns structured JSON from input dictionary
+    ---------------------------------------------
+    input: dictionary of file metadata
+    output: clean metadata json
+    """
+    clean_metadata_json = json.dumps(clean_metadata_dict)
 
     return clean_metadata_json
 
