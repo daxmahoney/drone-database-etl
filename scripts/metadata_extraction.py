@@ -44,32 +44,55 @@ def extract_metadata(path_to_img: str) -> dict:
     for tag_, metadata_ in image_jpeg_data['xmpmeta']['RDF']['Description'].items():
         img_metadata[f'xmp_{tag_}'] = metadata_
 
+    for t in img_metadata.keys():
+        if isinstance(img_metadata[t], str):
+            img_metadata[t] = img_metadata[t].replace('\x00', '')
+
     return img_metadata
 
 
-def metadata_dict_to_json(metadata_dictionary):
+def clean_metadata(metadata_dictionary):
     """
-    Returns structured JSON from input dictionary
-    ---------------------------------------------
-    input: dictionary of file metadata
-    output: json
+
     """
     clean_metadata = {}
 
     filename_args = metadata_dictionary['filename'].split('/')
     clean_metadata['stage'] = filename_args[-3].lower()
-    clean_metadata['filename'] = filename_args[-1]
+    clean_metadata['imgname'] = filename_args[-1]
     clean_metadata['imglocation'] = '/'.join(filename_args[-3:])
+    clean_metadata['format'] = filename_args[-1][-3:]
 
-    data_to_keep = ['imgwidth', 'imgheight',
-                    'exif_DateTime', 'exif_ImageDescription'
-                    'xmp_CreateDate', 'xmp_Make', 'xmp_Model',]
+    data_to_keep = ['imgwidth', 'imgheight', 'colorspace',
+                    'exif_DateTime', 'exif_ImageDescription',
+                    'xmp_Make', 'xmp_Model',
+                    'xmp_GpsLatitude', 'xmp_GpsLongtitude']
 
-    for md_k, md_v in metadata_dictionary.items():
-        if md_k in data_to_keep:
-            clean_metadata[md_k] = md_v
+    new_labels = ['imgwidth', 'imgheight', 'colorspace',
+                  'datetime', 'devicelocation',
+                  'make', 'model',
+                  'latitude', 'longitude']
 
-    clean_metadata_json = json.dumps(clean_metadata)
+    # Datetime unclear about 'creation'
+    # Missing colorprofile, focallength, alpha, redeye, metering, fnumber,
+    # exposure, exposuretime
+
+    for i in range(len(data_to_keep)):
+        new_key = new_labels[i]
+        old_key = data_to_keep[i]
+        clean_metadata[new_key] = metadata_dictionary[old_key]
+
+    return clean_metadata
+
+
+def metadata_dict_to_json(clean_metadata_dict):
+    """
+    Returns structured JSON from input dictionary
+    ---------------------------------------------
+    input: dictionary of file metadata
+    output: clean metadata json
+    """
+    clean_metadata_json = json.dumps(clean_metadata_dict)
 
     return clean_metadata_json
 
@@ -87,4 +110,4 @@ if __name__ == "__main__":
 
     print('======')
 
-    print(metadata_dict_to_json(metadata_dict))
+    print(metadata_dict_to_json(clean_metadata(metadata_dict)))
