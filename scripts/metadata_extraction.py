@@ -41,7 +41,7 @@ def extract_metadata(path_to_img: str) -> dict:
     image_jpeg = JpegImagePlugin.JpegImageFile(path_to_img)
     image_jpeg_data = image_jpeg.getxmp()
 
-    for tag_, metadata_ in image_jpeg_data['RDF'].items():
+    for tag_, metadata_ in image_jpeg_data['Description'].items():
         img_metadata[f'xmp_{tag_}'] = metadata_
 
     for t in img_metadata.keys():
